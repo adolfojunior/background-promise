@@ -44,13 +44,13 @@ const content = new BackgroundPromise((resolve, reject) => {
 })
 
 // the first call will trigger the executor to resolve the content
-content.get().then(body => { ... })
+content.get().then(number => { ... })
 
 // Will get the cached content if available,
 // or will wait in the queue for the same request below
-content.get().then(body => { ... })
+content.get().then(number => { ... })
 
 // Will get the cached content!
-content.get().then(body => { ... })
+content.get().then(number => { ... })
 
 ```
