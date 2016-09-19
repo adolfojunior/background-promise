@@ -7,6 +7,7 @@ export default class BackgroundPromise {
     ttl,
     // TODO: add a timeout to wait in the queue
     timeout,
+    interval,
     immediate,
     promiseClass
   } = {}) {
@@ -14,11 +15,15 @@ export default class BackgroundPromise {
     this.executor = executor
     this.updating = null
     this.content = null
-    this.lastUpdate = 0
     this.ttl = (ttl === undefined) ? ONE_MINUTE_MILLIS : ttl
+    this.lastUpdate = 0
+    this.interval = interval
+    this.timerId = null
     // auto load the content
-    if (immediate === true) {
+    if (immediate) {
       this.update()
+    } else if (interval) {
+      this.scheduleUpdate()
     }
   }
 
@@ -57,6 +62,7 @@ export default class BackgroundPromise {
         if (this.updating === updating) {
           this.updating = null
         }
+        this.scheduleUpdate()
       })
     }
     // TODO: limit to the queue
@@ -65,6 +71,24 @@ export default class BackgroundPromise {
       resolve,
       reject
     })
+  }
+
+  scheduleUpdate() {
+    if (this.timerId) {
+      clearTimeout(this.timerId)
+    }
+    if (this.interval && this.interval > 0) {
+      this.timerId = setTimeout(() => {
+        this.timerId = null
+        if (this.updating) {
+          // try again later
+          this.scheduleUpdate()
+        } else {
+          //
+          this.update()
+        }
+      }, this.interval)
+    }
   }
 
   executeUpdate() {
