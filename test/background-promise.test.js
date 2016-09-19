@@ -10,7 +10,6 @@ describe('background-promise', function() {
     let count = 0
     promiseRandom = new BackgroundPromise((resolve, reject) => {
       setTimeout(() => {
-        console.log(`executor after`, count)
         resolve(count++)
       }, 10)
     }, {
