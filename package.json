@@ -1,6 +1,6 @@
 {
-  "name": "reusable-promise",
-  "version": "0.0.1",
+  "name": "background-promise",
+  "version": "0.0.2",
   "description": "Reusable Promise with cache",
   "readmeFilename": "README.md",
   "keywords": [
@@ -19,7 +19,7 @@
     "url": "git+https://github.com/adolfojunior/background-promise"
   },
   "license": "MIT",
-  "main": "lib/reusable-promise.js",
+  "main": "lib/background-promise.js",
   "scripts": {
     "compile": "babel -d lib/ src/",
     "test-only": "mocha --compilers js:babel-core/register",
