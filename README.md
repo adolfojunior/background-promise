@@ -12,9 +12,9 @@ During a load process, if the cache receive multiples requests, it will push it 
 
 ## Methods
 
-`get()`: Return a `Promise` to the value.
-`update()`: Force an update on the cache.
-`isExpired()`: What the name says!
+- `get()`: Return a `Promise` to the value.
+- `update()`: Force an update on the cache.
+- `isExpired()`: What the name says!
 
 ### Simple example
 ```javascript
