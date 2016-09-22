@@ -23,13 +23,13 @@ describe('promise behavior', function() {
   })
 
   it('first value should wait', () => {
-    return promiseCount.get({ wait: false }).then(value => {
+    return promiseCount.getLast().then(value => {
       expect(value).to.be.equal(0)
 
       return promiseCount.get().then(value => {
         expect(value).to.be.equal(1)
 
-        return promiseCount.get({ wait: false }).then(value => {
+        return promiseCount.getLast().then(value => {
           // should get the last cached value and trigger an update
           expect(value).to.be.equal(1)
 
@@ -45,7 +45,7 @@ describe('promise behavior', function() {
     expect(promiseCount.rawValue()).to.be.equal(null)
     return Promise.all([
       promiseCount.get(),
-      promiseCount.get({ wait: false }),
+      promiseCount.getLast(),
       promiseCount.get()
     ]).then(values => {
       expect(count).to.be.equal(1)
@@ -53,14 +53,14 @@ describe('promise behavior', function() {
 
       return Promise.all([
         promiseCount.get(),
-        promiseCount.get({ wait: false }),
+        promiseCount.getLast(),
         promiseCount.get()
       ]).then(values => {
         expect(count).to.be.equal(2)
         expect(values).to.be.eql([1, 0, 1])
 
         return Promise.all([
-          promiseCount.get({ wait: false }),
+          promiseCount.getLast(),
           promiseCount.get(),
           promiseCount.get()
         ]).then(values => {

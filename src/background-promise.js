@@ -40,20 +40,24 @@ class BackgroundPromise {
     return true
   }
 
-  get(options = {}) {
+  get(wait = true) {
     if (!this.content) {
       // console.log(`# first load`, this.content)
       return this.update()
     } else if (this.isExpired()) {
       // console.log(`# content has expired`)
       const promise = this.update()
-      if (options.wait !== false) {
+      if (wait === true) {
         // console.log(`# will wait`)
         return promise
       }
     }
     // console.log(`# will value`)
     return this.value()
+  }
+
+  getLast() {
+    return this.get(false)
   }
 
   rawValue() {

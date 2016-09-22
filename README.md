@@ -13,6 +13,7 @@ During a load process, if the cache receive multiples requests, it will push it 
 ## Methods
 
 - `get()`: Return a `Promise` to the value.
+- `getLast()`: Return a `Promise` to the value, and avoid the queue, return the last loaded value!
 - `update()`: Force an update on the cache.
 - `isExpired()`: What the name says!
 
@@ -22,20 +23,19 @@ import backgroundPromise from 'background-promise'
 
 const content = backgroundPromise({
   load(resolve, reject) {
-    resolve(Math.random())
+    setTimeout(() => {
+      resolve(Math.random())
+    }, 1000)
   }
 })
 
 // the first call will trigger the executor to resolve the number
 content.get().then(number => { ... })
-
-// Will get the cached content if available,
-// or will wait in the queue for the same request below
+// Will go to the queue and wait for the same response
 content.get().then(number => { ... })
 
-// Will get the cached content!
+// after 1 second
 content.get().then(number => { ... })
-
 ```
 
 ## Example to cache a request
@@ -44,27 +44,28 @@ import request from 'request'
 import backgroundPromise from 'background-promise'
 
 const content = backgroundPromise({
+  ttl: 30000, // live for 30 seconds
+  interval: 300000, // each 5 minutes it will auto update
   load(resolve, reject) {
     request('https://api.github.com/repos/adolfojunior/background-promise', function (error, response, body) {
       if (!error && response.statusCode == 200) {
         resolve(body)
       } else {
-        reject()
+        reject(response.statusCode)
       }
     })
   }
 })
 
-// the first call will trigger the executor to resolve the content
-content.get().then(body => { ... })
+// the first call will trigger the executor to resolve the request
+content.getLast().then(body => { ... })
 
-// Will get the cached content if available,
-// or will wait in the queue for the same request below
-content.get().then(body => { ... })
+// Will always get the last loaded content!
+// if it is expired, it will trigger the update before the interval
+content.getLast().then(body => { ... })
 
 // Will get the cached content!
-content.get().then(body => { ... })
+content.getLast().then(body => { ... })
 
 ```
 
-If the content take to long to execute, there is also an option to
